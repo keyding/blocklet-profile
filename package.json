@@ -1,0 +1,24 @@
+{
+  "name": "blocklet-profile",
+  "version": "0.0.1",
+  "author": {
+    "name": "Caven",
+    "email": "cavenasdev@gmail.com"
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "server:init": "blocklet server init",
+    "server:start": "blocklet server start",
+    "server:stop": "blocklet server stop",
+    "up": "taze major -I"
+  },
+  "devDependencies": {
+    "@blocklet/cli": "^1.16.28",
+    "@types/bun": "latest",
+    "taze": "^0.16.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
