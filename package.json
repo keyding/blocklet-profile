@@ -1,24 +1,51 @@
 {
   "name": "blocklet-profile",
+  "type": "module",
   "version": "0.0.1",
+  "private": true,
   "author": {
     "name": "Caven",
     "email": "cavenasdev@gmail.com"
   },
-  "license": "MIT",
-  "type": "module",
   "scripts": {
-    "server:init": "blocklet server init",
-    "server:start": "blocklet server start",
-    "server:stop": "blocklet server stop",
+    "prepare": "bunx simple-git-hooks",
+    "dev": "blocklet dev",
+    "start": "vite --host",
+    "serve": "vite preview",
+    "clean": "rimraf .blocklet",
+    "build": "vue-tsc -b && bun clean && vite build && blocklet bundle --zip --create-release",
+    "deploy": "bun run build && blocklet deploy .blocklet/bundle",
+    "upload": "bun run build && blocklet upload .blocklet/release/blocklet.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "bump-version": "zx --quiet scripts/bump-version.mjs",
     "up": "taze major -I"
   },
-  "devDependencies": {
-    "@blocklet/cli": "^1.16.28",
-    "@types/bun": "latest",
-    "taze": "^0.16.3"
+  "dependencies": {
+    "vue": "^3.4.35"
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.24.0",
+    "@blocklet/cli": "^1.16.28",
+    "@unocss/eslint-plugin": "^0.61.8",
+    "@vitejs/plugin-vue": "^5.1.1",
+    "bumpp": "^9.4.1",
+    "eslint": "9.5.0",
+    "eslint-plugin-format": "^0.1.2",
+    "lint-staged": "^15.2.7",
+    "rimraf": "^6.0.1",
+    "simple-git-hooks": "^2.11.1",
+    "taze": "^0.16.3",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vite-plugin-blocklet": "^0.8.11",
+    "vue-tsc": "^2.0.29",
+    "zx": "^8.1.4"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bun lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
