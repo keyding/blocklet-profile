@@ -59,7 +59,7 @@ onBeforeMount(async () => {
   <div class="flex-1 flex flex-col">
     <Cover />
     <Account />
-    <div v-if="id && profileStore.profile.id" class="flex-1">
+    <div v-if="id" class="flex-1">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 transition-all px-9 lg:px-14">
         <AboutMe />
         <Socials />

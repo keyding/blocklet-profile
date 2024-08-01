@@ -60,7 +60,7 @@ const tabs = ref([{
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col transition-all p-9 pb-0 md:p-14 md:px-32">
+  <div class="flex-1 flex flex-col transition-all p-9 !pb-0 md:p-14 md:px-32">
     <section class="flex flex-col gap-2">
       <h2 class="text-3xl font-semibold text-foreground">
         {{ titleLabel }} Profile
@@ -73,7 +73,7 @@ const tabs = ref([{
     <div v-if="isEditInvalid" class="flex-1 w-full flex items-center justify-center">
       <EmptyStatus />
     </div>
-    <div v-else class="flex-1 w-full flex justify-center">
+    <div v-else class="flex-1 w-full flex flex-col items-center gap-4">
       <Tabs :default-value="tabs[0].value" class="w-[400px]">
         <TabsList class="inline-flex items-center">
           <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">

@@ -22,8 +22,11 @@ import { Button } from '@/components/ui/button'
         <Textarea placeholder="Enter your details" rows="3" />
       </div>
     </CardContent>
-    <CardFooter>
+    <CardFooter class="gap-2">
       <Button>Save changes</Button>
+      <Button variant="outline">
+        View Profile
+      </Button>
     </CardFooter>
   </Card>
 </template>

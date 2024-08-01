@@ -54,8 +54,11 @@ import { Input } from '@/components/ui/input'
         </Button>
       </div>
     </CardContent>
-    <CardFooter>
+    <CardFooter class="gap-2">
       <Button>Save changes</Button>
+      <Button variant="outline">
+        View Profile
+      </Button>
     </CardFooter>
   </Card>
 </template>

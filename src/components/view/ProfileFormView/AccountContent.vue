@@ -44,8 +44,11 @@ import { DEFAULT_AVATAR_URL } from '@/lib/const'
         <Input id="username" placeholder="Enter your introduction" />
       </div>
     </CardContent>
-    <CardFooter>
+    <CardFooter class="gap-2">
       <Button>Save changes</Button>
+      <Button variant="outline">
+        View Profile
+      </Button>
     </CardFooter>
   </Card>
 </template>
