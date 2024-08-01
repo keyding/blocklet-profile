@@ -3,7 +3,6 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
-import { shallowRef } from 'vue'
 import Skeleton from './Skeleton.vue'
 import EmailIcon from '@/components/Icons/Email.vue'
 import PhoneIcon from '@/components/Icons/Phone.vue'
@@ -14,12 +13,12 @@ import TelegramIcon from '@/components/Icons/Telegram.vue'
 import { useProfileStore } from '@/store'
 
 const TypeToIconMap = {
-  email: shallowRef(EmailIcon),
-  phone: shallowRef(PhoneIcon),
-  github: shallowRef(GitHubIcon),
-  x: shallowRef(XIcon),
-  website: shallowRef(GlobeIcon),
-  telegram: shallowRef(TelegramIcon),
+  email: EmailIcon,
+  phone: PhoneIcon,
+  github: GitHubIcon,
+  x: XIcon,
+  website: GlobeIcon,
+  telegram: TelegramIcon,
 }
 
 const profileStore = useProfileStore()

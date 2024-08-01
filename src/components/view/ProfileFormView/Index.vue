@@ -3,8 +3,9 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed, ref, shallowRef } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, shallowRef } from 'vue'
+import { toast } from 'vue-sonner'
 import AccountContent from './AccountContent.vue'
 import AboutMeContent from './AboutMeContent.vue'
 import ContactMeContent from './SocialsContent.vue'
@@ -12,11 +13,32 @@ import ProjectsContent from './ProjectsContent.vue'
 import Copyright from '@/components/Copyright.vue'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useProfileStore } from '@/store'
+import EmptyStatus from '@/components/view/ProfileView/EmptyStatus.vue'
 
 const route = useRoute()
-const username = route.params.username
+const router = useRouter()
+const profileStore = useProfileStore()
 
-const titleLabel = computed(() => username ? 'Edit' : 'Create')
+const id = route.params.id
+const isCreate = route.path === '/profile/create'
+const titleLabel = isCreate ? 'Create' : 'Edit'
+const isEditInvalid = !isCreate && (!id || profileStore.profile.id !== id)
+
+// Clear store when create new profile
+if (isCreate) {
+  profileStore.clearProfile()
+}
+
+if (isEditInvalid) {
+  toast.warning('Unknown user', {
+    description: `Unable to retrieve the user's profile information.`,
+    action: {
+      label: 'Create Profile',
+      onClick: () => router.replace('/profile/create'),
+    },
+  })
+}
 
 const tabs = ref([{
   value: 0,
@@ -48,7 +70,10 @@ const tabs = ref([{
       </p>
     </section>
     <Separator class="my-9" />
-    <div class="flex-1 w-full flex justify-center">
+    <div v-if="isEditInvalid" class="flex-1 w-full flex items-center justify-center">
+      <EmptyStatus />
+    </div>
+    <div v-else class="flex-1 w-full flex justify-center">
       <Tabs :default-value="tabs[0].value" class="w-[400px]">
         <TabsList class="inline-flex items-center">
           <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
@@ -56,18 +81,8 @@ const tabs = ref([{
           </TabsTrigger>
         </TabsList>
         <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value">
-          <!-- <AccountContent /> -->
           <component :is="tab.component" />
         </TabsContent>
-        <!-- <TabsContent :value="tabs[1].value">
-          <AboutMeContent />
-        </TabsContent>
-        <TabsContent :value="tabs[2].value">
-          <ContactMeContent />
-        </TabsContent>
-        <TabsContent :value="tabs[3].value">
-          <ProjectsContent />
-        </TabsContent> -->
       </Tabs>
     </div>
     <Copyright />
