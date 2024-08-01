@@ -3,8 +3,11 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import EmptyStatusImg from '@/assets/empty-status.png'
 import { Button } from '@/components/ui/button'
+
+const router = useRouter()
 </script>
 
 <template>
@@ -16,7 +19,7 @@ import { Button } from '@/components/ui/button'
       <p>You have not created your profile yet.</p>
       <p>Click the button to get started.</p>
     </div>
-    <Button variant="outline">
+    <Button variant="outline" @click="router.push('/profile-form')">
       Create Profile
     </Button>
   </div>
