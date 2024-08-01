@@ -8,6 +8,10 @@ import EmptyStatusImg from '@/assets/empty-status.png'
 import { Button } from '@/components/ui/button'
 
 const router = useRouter()
+
+async function handleCreateProfile() {
+  router.push('/profile-form')
+}
 </script>
 
 <template>
@@ -19,7 +23,7 @@ const router = useRouter()
       <p>You have not created your profile yet.</p>
       <p>Click the button to get started.</p>
     </div>
-    <Button variant="outline" @click="router.push('/profile-form')">
+    <Button variant="outline" @click="handleCreateProfile">
       Create Profile
     </Button>
   </div>
