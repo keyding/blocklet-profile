@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 </script>
 
 <template>
-  <section class="group w-full h-40 bg-gradient-to-r from-sky-500 to-fuchsia-500 relative transition-all lg:rounded-t-3xl lg:h-52">
+  <div class="group w-full h-40 bg-gradient-to-r from-sky-500 to-fuchsia-500 relative transition-all lg:rounded-t-3xl lg:h-52">
     <Button size="sm" class="absolute right-6 bottom-6 lg:hidden lg:group-hover:block">
       Change cover
     </Button>
-  </section>
+  </div>
 </template>
