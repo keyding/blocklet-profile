@@ -8,10 +8,10 @@ import { useRoute } from 'vue-router'
 import AboutMe from './AboutMe.vue'
 import Socials from './Socials.vue'
 import Projects from './Projects.vue'
+import EmptyStatus from './EmptyStatus.vue'
 import Cover from '@/components/profile/Cover.vue'
 import Account from '@/components/profile/Account.vue'
 import Copyright from '@/components/Copyright.vue'
-import EmptyStatus from '@/components/profile/EmptyStatus.vue'
 
 const route = useRoute()
 const username = route.params.username
