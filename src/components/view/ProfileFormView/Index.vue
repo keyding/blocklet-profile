@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 import { computed, ref, shallowRef } from 'vue'
 import AccountContent from './AccountContent.vue'
 import AboutMeContent from './AboutMeContent.vue'
-import ContactMeContent from './ContactMeContent.vue'
+import ContactMeContent from './SocialsContent.vue'
 import ProjectsContent from './ProjectsContent.vue'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -27,7 +27,7 @@ const tabs = ref([{
   component: shallowRef(AboutMeContent),
 }, {
   value: 2,
-  label: 'Contact me',
+  label: 'Socials',
   component: shallowRef(ContactMeContent),
 }, {
   value: 3,
