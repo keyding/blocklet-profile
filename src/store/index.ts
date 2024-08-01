@@ -1,5 +1,6 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { supabase } from '@/lib/db'
 
 type SocialType = 'email' | 'phone' | 'github' | 'x' | 'website' | 'telegram'
 
@@ -15,7 +16,7 @@ interface Project {
 }
 
 interface Profile {
-  username: string
+  id: string
   name: string
   introduction: string
   avatarUrl: string
@@ -24,53 +25,36 @@ interface Profile {
   projects: Project[]
 }
 
+const DefaultProfile = {
+  id: '',
+  name: '',
+  introduction: '',
+  avatarUrl: '',
+  aboutMe: '',
+  socials: [],
+  projects: [],
+}
+
 export const useProfileStore = defineStore('profile', () => {
   const loading = ref(true)
-  const profile = reactive<Profile>({
-    username: '',
-    name: '',
-    introduction: '',
-    avatarUrl: '',
-    aboutMe: '',
-    socials: [],
-    projects: [],
-  })
+  const profile = reactive<Profile>({ ...DefaultProfile })
 
   function setProfile(data: Partial<Profile>) {
     Object.assign(profile, { ...data })
+  }
+
+  function clearProfile() {
+    setProfile({ ...DefaultProfile })
   }
 
   function setLoading(status: boolean) {
     loading.value = status
   }
 
-  async function fetchProfile(username: string) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          username,
-          name: 'Caven Ding',
-          introduction: `I'm a full-stack development engineer`,
-          avatarUrl: 'https://github.com/keyding.png',
-          aboutMe: `Hello everyone, my name is Caven, and I am a full-stack engineer with 8+ years of experience. I specialize in HTML, CSS, and JavaScript, and have substantial hands-on experience with frameworks like React and Vue.js.`,
-          socials: [{
-            type: 'email',
-            value: 'heycaven@duck.com',
-          }, {
-            type: 'phone',
-            value: '+1 (555) 123-4567',
-          }],
-          projects: [
-            {
-              name: 'Online Arbitrage Tool',
-              introduction: 'A tool that quickly and automatically check any Amazon FBA online arbitrage deal.',
-              link: 'oa.amazonus.app',
-            },
-          ],
-        })
-      }, 1000)
-    })
+  async function fetchProfileBy(id: string) {
+    const { data, error } = await supabase.from('profile').select().eq('id', id)
+    return error ? [] : data
   }
 
-  return { profile, setProfile, fetchProfile, loading, setLoading }
+  return { profile, setProfile, clearProfile, fetchProfileBy, loading, setLoading }
 })
