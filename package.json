@@ -19,22 +19,32 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "bump-version": "zx --quiet scripts/bump-version.mjs",
-    "up": "taze major -I"
+    "up": "taze major -I",
+    "shadcn:add": "bunx shadcn-vue@latest add"
   },
   "dependencies": {
-    "vue": "^3.4.35"
+    "@radix-icons/vue": "^1.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "radix-vue": "^1.9.2",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "vue": "^3.4.35",
+    "vue-router": "4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.24.0",
     "@blocklet/cli": "^1.16.28",
     "@unocss/eslint-plugin": "^0.61.8",
     "@vitejs/plugin-vue": "^5.1.1",
+    "autoprefixer": "^10.4.19",
     "bumpp": "^9.4.1",
     "eslint": "9.5.0",
     "eslint-plugin-format": "^0.1.2",
     "lint-staged": "^15.2.7",
     "rimraf": "^6.0.1",
     "simple-git-hooks": "^2.11.1",
+    "tailwindcss": "^3.4.7",
     "taze": "^0.16.3",
     "typescript": "^5.5.4",
     "vite": "^5.3.5",
