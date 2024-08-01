@@ -10,6 +10,7 @@ interface Social {
 }
 
 interface Project {
+  id: string
   name: string
   introduction: string
   link: string

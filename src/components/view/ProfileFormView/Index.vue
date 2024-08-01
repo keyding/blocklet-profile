@@ -4,17 +4,19 @@
 -->
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { ref, shallowRef } from 'vue'
+import { onBeforeMount, ref, shallowRef } from 'vue'
 import { toast } from 'vue-sonner'
 import AccountContent from './AccountContent.vue'
 import AboutMeContent from './AboutMeContent.vue'
 import ContactMeContent from './SocialsContent.vue'
 import ProjectsContent from './ProjectsContent.vue'
+import Skeleton from './Skeleton.vue'
 import Copyright from '@/components/Copyright.vue'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useProfileStore } from '@/store'
 import EmptyStatus from '@/components/view/ProfileView/EmptyStatus.vue'
+import { supabase } from '@/lib/db'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,22 +25,45 @@ const profileStore = useProfileStore()
 const id = route.params.id
 const isCreate = route.path === '/profile/create'
 const titleLabel = isCreate ? 'Create' : 'Edit'
-const isEditInvalid = !isCreate && (!id || profileStore.profile.id !== id)
 
-// Clear store when create new profile
-if (isCreate) {
-  profileStore.clearProfile()
-}
+onBeforeMount(async () => {
+  profileStore.setLoading(false)
 
-if (isEditInvalid) {
-  toast.warning('Unknown user', {
-    description: `Unable to retrieve the user's profile information.`,
-    action: {
-      label: 'Create Profile',
-      onClick: () => router.replace('/profile/create'),
-    },
-  })
-}
+  // Clear store when create new profile
+  if (isCreate) {
+    profileStore.clearProfile()
+  }
+  else if (!id) {
+    router.push('/profile/create')
+  }
+  else {
+    profileStore.setLoading(true)
+    const { data, error } = await supabase.from('profile').select().eq('id', id)
+    profileStore.setLoading(false)
+
+    if (error || !data?.length) {
+      toast.warning('Unknown user', {
+        description: `Unable to retrieve the user's profile information.`,
+        action: {
+          label: 'Create Profile',
+          onClick: () => router.replace('/profile/create'),
+        },
+      })
+      return
+    }
+
+    const { id: userId, name, introduction, avatar_url: avatarUrl, about_me: aboutMe, socials, projects } = data[0]
+    profileStore.setProfile({
+      id: userId,
+      name,
+      introduction,
+      avatarUrl,
+      aboutMe,
+      socials,
+      projects,
+    })
+  }
+})
 
 const tabs = ref([{
   value: 0,
@@ -70,7 +95,8 @@ const tabs = ref([{
       </p>
     </section>
     <Separator class="my-9" />
-    <div v-if="isEditInvalid" class="flex-1 w-full flex items-center justify-center">
+    <Skeleton v-if="profileStore.loading" />
+    <div v-else-if="!isCreate && !profileStore.profile.id" class="flex-1 w-full flex items-center justify-center">
       <EmptyStatus />
     </div>
     <div v-else class="flex-1 w-full flex flex-col items-center gap-4">
