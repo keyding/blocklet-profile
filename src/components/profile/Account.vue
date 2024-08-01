@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{ name: string, introduction: string, ava
       <h2 class="text-3xl font-semibold text-zinc-900 mt-5">
         {{ props.name }}
       </h2>
-      <p class="text-sm text-zinc-600 mt-2">
+      <p class="text-zinc-600 mt-2">
         {{ props.introduction }}
       </p>
     </div>
