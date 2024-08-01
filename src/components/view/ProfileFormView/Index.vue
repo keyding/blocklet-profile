@@ -9,6 +9,7 @@ import AccountContent from './AccountContent.vue'
 import AboutMeContent from './AboutMeContent.vue'
 import ContactMeContent from './SocialsContent.vue'
 import ProjectsContent from './ProjectsContent.vue'
+import Copyright from '@/components/Copyright.vue'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -37,7 +38,7 @@ const tabs = ref([{
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col transition-all p-9 md:p-14 md:px-32">
+  <div class="flex-1 flex flex-col transition-all p-9 pb-0 md:p-14 md:px-32">
     <section class="flex flex-col gap-2">
       <h2 class="text-3xl font-semibold text-foreground">
         {{ titleLabel }} Profile
@@ -47,7 +48,7 @@ const tabs = ref([{
       </p>
     </section>
     <Separator class="my-9" />
-    <div class="w-full flex items-center justify-center">
+    <div class="flex-1 w-full flex justify-center">
       <Tabs :default-value="tabs[0].value" class="w-[400px]">
         <TabsList class="inline-flex items-center">
           <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
@@ -69,5 +70,6 @@ const tabs = ref([{
         </TabsContent> -->
       </Tabs>
     </div>
+    <Copyright />
   </div>
 </template>
