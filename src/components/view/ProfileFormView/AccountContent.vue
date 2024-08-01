@@ -3,7 +3,7 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { toast } from 'vue-sonner'
 import { useRoute, useRouter } from 'vue-router'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { DEFAULT_AVATAR_URL } from '@/lib/const'
+import { AVATAR_BASE_URL, DEFAULT_AVATAR_URL } from '@/lib/const'
 import { supabase } from '@/lib/db'
 import { useProfileStore } from '@/store'
 
@@ -22,48 +22,46 @@ const id = route.params.id
 
 const name = ref(profileStore.profile.name)
 const introduction = ref(profileStore.profile.introduction)
-const avatarUrl = ref(DEFAULT_AVATAR_URL)
+const avatarUrl = ref(profileStore.profile.avatarUrl ? `${AVATAR_BASE_URL}/${profileStore.profile.avatarUrl}` : DEFAULT_AVATAR_URL)
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const loading = ref(false)
+const uploadLoading = ref(false)
+const avatarFile = shallowRef()
 
-function triggerFileInput() {
-  inputRef.value?.click()
-}
-
-let avatarFile
 async function handleFileChange(event: any) {
-  console.log(event.target.files)
-  avatarFile = event.target.files[0]
+  avatarFile.value = event.target.files[0]
+  uploadLoading.value = true
 
-  // const { data, error } = await supabase
-  //   .storage
-  //   .from('avatar')
-  //   .list('public', {
-  //     limit: 100,
-  //     offset: 0,
-  //     sortBy: { column: 'name', order: 'asc' },
-  //   })
-
-  const { data, error } = await supabase
+  const suffix = avatarFile.value.type.split('/')[1]
+  // Upload avatar
+  const { data: avatarData, error: avatarError } = await supabase
     .storage
     .from('avatar')
-    .upload('public/avatar1.png', avatarFile, {
+    .upload(`public/${Date.now()}.${suffix}`, avatarFile.value, {
       cacheControl: '3600',
       upsert: false,
     })
 
-  console.log(data, error)
+  uploadLoading.value = false
+
+  if (avatarError || !avatarData) {
+    toast.error('Avatar upload failed, please try again.')
+    return
+  }
+
+  avatarUrl.value = `${AVATAR_BASE_URL}/${avatarData.fullPath}`
 }
 
 async function handleUpsertAccount() {
   loading.value = true
+
   const { data, error } = await supabase.from('profile').upsert({
     id: profileStore.profile.id || undefined,
     name: name.value,
     introduction: introduction.value,
     slug: name.value.trim().replace(/\s+/g, '-').toLowerCase(),
-    avatar_url: avatarUrl.value,
+    avatar_url: avatarUrl.value.replace(`${AVATAR_BASE_URL}/`, ''),
   }, { onConflict: 'id' }).select()
   loading.value = false
 
@@ -77,6 +75,7 @@ async function handleUpsertAccount() {
     id,
     name: name.value,
     introduction: introduction.value,
+    avatarUrl: avatarUrl.value,
   })
 
   router.push(`/profile/edit/${id}`)
@@ -102,10 +101,10 @@ async function handleUpsertAccount() {
         </div>
         <div class="flex items-center gap-6">
           <Avatar class="relative w-20 h-20">
-            <AvatarImage :src="DEFAULT_AVATAR_URL" alt="@shadcn" />
+            <AvatarImage :src="avatarUrl" alt="@shadcn" />
           </Avatar>
-          <input id="upload-avatar" ref="inputRef" type="file" class="hidden" @change="handleFileChange">
-          <Button size="sm" for="upload-avatar" @click="triggerFileInput">
+          <input id="upload-avatar" ref="inputRef" type="file" class="hidden" accept=".jpeg, .png" @change="handleFileChange">
+          <Button size="sm" for="upload-avatar" :disabled="uploadLoading" @click="() => inputRef?.click()">
             Upload
           </Button>
         </div>

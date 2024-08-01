@@ -7,7 +7,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Skeleton from './Skeleton.vue'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { DEFAULT_AVATAR_URL } from '@/lib/const'
+import { AVATAR_BASE_URL, DEFAULT_AVATAR_URL } from '@/lib/const'
 import { useProfileStore } from '@/store'
 import { Button } from '@/components/ui/button'
 
@@ -19,7 +19,7 @@ const id = route.params.id
 
 const name = computed(() => profileStore.profile.name || `Hey, What's up!`)
 const introduction = computed(() => profileStore.profile.introduction || `Let's create your profile right away!`)
-const avatarUrl = computed(() => profileStore.profile.avatarUrl || DEFAULT_AVATAR_URL)
+const avatarUrl = computed(() => profileStore.profile.avatarUrl ? `${AVATAR_BASE_URL}${profileStore.profile.avatarUrl}` : DEFAULT_AVATAR_URL)
 </script>
 
 <template>
