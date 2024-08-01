@@ -3,28 +3,63 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import AboutMe from './AboutMe.vue'
-import Socials from './Socials.vue'
-import Projects from './Projects.vue'
+import { useRoute, useRouter } from 'vue-router'
+import { onBeforeMount } from 'vue'
+import { toast } from 'vue-sonner'
+import AboutMe from './AboutMe/Index.vue'
+import Socials from './Socials/Index.vue'
+import Projects from './Projects/Index.vue'
+import EmptyStatus from './EmptyStatus.vue'
 import Cover from '@/components/profile/Cover.vue'
-import Account from '@/components/profile/Account.vue'
+import Account from '@/components/profile/Account/Index.vue'
 import Copyright from '@/components/Copyright.vue'
-import EmptyStatus from '@/components/profile/EmptyStatus.vue'
+import { useProfileStore } from '@/store'
 
+const profileStore = useProfileStore()
+const router = useRouter()
 const route = useRoute()
-const username = route.params.username
+const id = route.params.id
 
-const name = ref(`Hey, What's up!`)
-const introduction = ref(`Let's create your profile right away!`)
+if (!id) {
+  profileStore.setLoading(false)
+}
+
+onBeforeMount(async () => {
+  if (!id)
+    return
+
+  const data = await profileStore.fetchProfileBy(id as string)
+  profileStore.setLoading(false)
+
+  if (!data?.length) {
+    toast.warning('Unknown user', {
+      description: `Unable to retrieve the user's profile information.`,
+      action: {
+        label: 'Create Profile',
+        onClick: () => router.replace('/profile-form'),
+      },
+    })
+    return
+  }
+
+  const { id: userId, name, introduction, avatar_url: avatarUrl, about_me: aboutMe, socials, projects } = data[0]
+  profileStore.setProfile({
+    id: userId,
+    name,
+    introduction,
+    avatarUrl,
+    aboutMe,
+    socials,
+    projects,
+  })
+})
 </script>
 
 <template>
   <div class="flex-1 flex flex-col">
-    <Cover :can-change-cover="!!username" />
-    <Account :name="name" :introduction="introduction" />
-    <div v-if="username" class="flex-1">
+    <Cover />
+    <Account />
+    <div v-if="id" class="flex-1">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 transition-all px-9 lg:px-14">
         <AboutMe />
         <Socials />
@@ -34,7 +69,6 @@ const introduction = ref(`Let's create your profile right away!`)
     <div v-else class="flex-1 flex flex-col items-center justify-center">
       <EmptyStatus />
     </div>
-
     <Copyright />
   </div>
 </template>

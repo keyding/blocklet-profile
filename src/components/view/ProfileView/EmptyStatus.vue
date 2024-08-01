@@ -19,7 +19,7 @@ const router = useRouter()
       <p>You have not created your profile yet.</p>
       <p>Click the button to get started.</p>
     </div>
-    <Button variant="outline" @click="router.push('/profile-form')">
+    <Button variant="outline" @click="router.push('/profile/create')">
       Create Profile
     </Button>
   </div>

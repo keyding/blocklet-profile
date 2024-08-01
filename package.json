@@ -24,14 +24,17 @@
   },
   "dependencies": {
     "@radix-icons/vue": "^1.0.0",
+    "@supabase/supabase-js": "^2.45.0",
     "@vueuse/core": "^10.11.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "pinia": "^2.2.0",
     "radix-vue": "^1.9.2",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.35",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vue-sonner": "^1.1.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.24.0",

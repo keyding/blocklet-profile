@@ -3,20 +3,67 @@
  * @since: 2024-08-01
 -->
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed, ref, shallowRef } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { onBeforeMount, ref, shallowRef } from 'vue'
+import { toast } from 'vue-sonner'
 import AccountContent from './AccountContent.vue'
 import AboutMeContent from './AboutMeContent.vue'
 import ContactMeContent from './SocialsContent.vue'
 import ProjectsContent from './ProjectsContent.vue'
+import Skeleton from './Skeleton.vue'
 import Copyright from '@/components/Copyright.vue'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useProfileStore } from '@/store'
+import EmptyStatus from '@/components/view/ProfileView/EmptyStatus.vue'
+import { supabase } from '@/lib/db'
 
 const route = useRoute()
-const username = route.params.username
+const router = useRouter()
+const profileStore = useProfileStore()
 
-const titleLabel = computed(() => username ? 'Edit' : 'Create')
+const id = route.params.id
+const isCreate = route.path === '/profile/create'
+const titleLabel = isCreate ? 'Create' : 'Edit'
+
+onBeforeMount(async () => {
+  profileStore.setLoading(false)
+
+  // Clear store when create new profile
+  if (isCreate) {
+    profileStore.clearProfile()
+  }
+  else if (!id) {
+    router.push('/profile/create')
+  }
+  else {
+    profileStore.setLoading(true)
+    const { data, error } = await supabase.from('profile').select().eq('id', id)
+    profileStore.setLoading(false)
+
+    if (error || !data?.length) {
+      toast.warning('Unknown user', {
+        description: `Unable to retrieve the user's profile information.`,
+        action: {
+          label: 'Create Profile',
+          onClick: () => router.replace('/profile/create'),
+        },
+      })
+      return
+    }
+
+    const { id: userId, name, introduction, avatar_url: avatarUrl, about_me: aboutMe, socials, projects } = data[0]
+    profileStore.setProfile({
+      id: userId,
+      name,
+      introduction,
+      avatarUrl,
+      aboutMe,
+      socials,
+      projects,
+    })
+  }
+})
 
 const tabs = ref([{
   value: 0,
@@ -38,7 +85,7 @@ const tabs = ref([{
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col transition-all p-9 pb-0 md:p-14 md:px-32">
+  <div class="flex-1 flex flex-col transition-all p-9 !pb-0 md:p-14 md:px-32">
     <section class="flex flex-col gap-2">
       <h2 class="text-3xl font-semibold text-foreground">
         {{ titleLabel }} Profile
@@ -48,7 +95,11 @@ const tabs = ref([{
       </p>
     </section>
     <Separator class="my-9" />
-    <div class="flex-1 w-full flex justify-center">
+    <Skeleton v-if="profileStore.loading" />
+    <div v-else-if="!isCreate && !profileStore.profile.id" class="flex-1 w-full flex items-center justify-center">
+      <EmptyStatus />
+    </div>
+    <div v-else class="flex-1 w-full flex flex-col items-center gap-4">
       <Tabs :default-value="tabs[0].value" class="w-[400px]">
         <TabsList class="inline-flex items-center">
           <TabsTrigger v-for="tab in tabs" :key="tab.value" :value="tab.value">
@@ -56,18 +107,8 @@ const tabs = ref([{
           </TabsTrigger>
         </TabsList>
         <TabsContent v-for="tab in tabs" :key="tab.value" :value="tab.value">
-          <!-- <AccountContent /> -->
           <component :is="tab.component" />
         </TabsContent>
-        <!-- <TabsContent :value="tabs[1].value">
-          <AboutMeContent />
-        </TabsContent>
-        <TabsContent :value="tabs[2].value">
-          <ContactMeContent />
-        </TabsContent>
-        <TabsContent :value="tabs[3].value">
-          <ProjectsContent />
-        </TabsContent> -->
       </Tabs>
     </div>
     <Copyright />
