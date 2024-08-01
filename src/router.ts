@@ -4,8 +4,8 @@ import ProfileView from '@/components/view/ProfileView/Index.vue'
 import ProfileFormView from '@/components/view/ProfileFormView/Index.vue'
 
 const routes = [
-  { path: '/:username?', component: ProfileView },
-  { path: '/profile-form/:username?', component: ProfileFormView },
+  { path: '/:id?', component: ProfileView },
+  { path: '/profile-form/:id?', component: ProfileFormView },
 ]
 
 export const router = createRouter({
