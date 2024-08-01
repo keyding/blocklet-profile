@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import Layout from './components/profile/Layout.vue'
 </script>
 
 <template>
-  <div class="h-screen flex items-center justify-center">
-    <Button>
-      Hello Blocklet
-    </Button>
-  </div>
+  <main class="w-full h-full bg-zinc-100 overflow-auto">
+    <Layout />
+  </main>
 </template>
