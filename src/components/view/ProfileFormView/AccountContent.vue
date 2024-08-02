@@ -23,7 +23,7 @@ const id = route.params.id
 const { profile, setProfile } = profileStore
 const name = ref(profile.name)
 const introduction = ref(profile.introduction)
-const avatarUrl = ref(profile.avatarUrl ? `${AVATAR_BASE_URL}/${profile.avatarUrl}` : '')
+const avatarUrl = ref(profile.avatarUrl ? `${AVATAR_BASE_URL}${profile.avatarUrl}` : '')
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const loading = ref(false)
@@ -71,13 +71,15 @@ async function handleUpsertAccount() {
   }
 
   loading.value = true
+
   const slug = name.value.trim().replace(/\s+/g, '-').toLowerCase()
+  const avatarUrlPath = avatarUrl.value.replace(`${AVATAR_BASE_URL}/`, '')
   const { data, error } = await supabase.from('profile').upsert({
     id: profileStore.profile.id || undefined,
     name: name.value,
     introduction: introduction.value,
     slug,
-    avatar_url: avatarUrl.value.replace(`${AVATAR_BASE_URL}/`, ''), // only saved fullPath
+    avatar_url: avatarUrlPath, // only saved fullPath
   }, { onConflict: 'id' }).select()
   loading.value = false
 
@@ -92,7 +94,7 @@ async function handleUpsertAccount() {
     name: name.value,
     introduction: introduction.value,
     slug,
-    avatarUrl: avatarUrl.value,
+    avatarUrl: avatarUrlPath,
   })
 
   router.push(`/profile/edit/${id}`)
