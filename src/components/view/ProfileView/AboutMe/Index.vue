@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import Skeleton from './Skeleton.vue'
 import { useProfileStore } from '@/store'
+import Empty from '@/components/view/ProfileView/Empty.vue'
 
 const profileStore = useProfileStore()
 </script>
@@ -15,8 +16,12 @@ const profileStore = useProfileStore()
     <h3 class="text-xl font-semibold text-zinc-900 tracking-tight">
       About me
     </h3>
-    <p class="text-zinc-500 leading-relaxed">
+    <p v-if="profileStore.profile.aboutMe" class="text-zinc-500 leading-relaxed">
       {{ profileStore.profile.aboutMe }}
     </p>
+    <Empty v-else>
+      <p>You haven't added About me yet.</p>
+      <p>Click 'Edit Profile' to add them.</p>
+    </Empty>
   </div>
 </template>
