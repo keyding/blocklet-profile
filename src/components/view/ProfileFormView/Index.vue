@@ -65,23 +65,29 @@ onBeforeMount(async () => {
   }
 })
 
-const tabs = ref([{
-  value: 0,
-  label: 'Account',
-  component: shallowRef(AccountContent),
-}, {
-  value: 1,
-  label: 'About me',
-  component: shallowRef(AboutMeContent),
-}, {
-  value: 2,
-  label: 'Socials',
-  component: shallowRef(ContactMeContent),
-}, {
-  value: 3,
-  label: 'Projects',
-  component: shallowRef(ProjectsContent),
-}])
+const tabs = ref(isCreate
+  ? [{
+      value: 0,
+      label: 'Account',
+      component: shallowRef(AccountContent),
+    }]
+  : [{
+      value: 0,
+      label: 'Account',
+      component: shallowRef(AccountContent),
+    }, {
+      value: 1,
+      label: 'About me',
+      component: shallowRef(AboutMeContent),
+    }, {
+      value: 2,
+      label: 'Socials',
+      component: shallowRef(ContactMeContent),
+    }, {
+      value: 3,
+      label: 'Projects',
+      component: shallowRef(ProjectsContent),
+    }])
 </script>
 
 <template>

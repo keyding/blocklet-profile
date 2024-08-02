@@ -41,7 +41,7 @@ async function handleUpdateAccount() {
     aboutMe: aboutMe.value,
   })
 
-  toast.success('Your profile have been saved.')
+  toast.success('Your personal info have been saved.')
 }
 </script>
 
@@ -59,7 +59,7 @@ async function handleUpdateAccount() {
       </div>
     </CardContent>
     <CardFooter class="gap-2">
-      <Button :disabled="loading" @click="handleUpdateAccount">
+      <Button :disabled="!aboutMe || loading" @click="handleUpdateAccount">
         Save changes
       </Button>
       <Button variant="outline" :disabled="loading" @click="router.push(`/profile/${id}`)">

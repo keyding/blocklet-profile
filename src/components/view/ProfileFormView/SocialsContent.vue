@@ -16,12 +16,12 @@ import { router } from '@/router'
 
 const route = useRoute()
 const profileStore = useProfileStore()
-
+const { setProfile, profile } = profileStore
 const id = route.params.id
 
 const loading = ref(false)
-const socials = ref(profileStore.profile.socials?.length
-  ? [...profileStore.profile.socials]
+const socials = ref(profile.socials?.length
+  ? [...profile.socials]
   : [
       {
         type: 'email',
@@ -58,6 +58,30 @@ async function handleUpdate() {
   if (!id)
     return
 
+  // valid email
+  const email = socials.value.find(social => social.type === 'email')?.value
+  const emailRegex = /^[\w.%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i
+  if (email && !emailRegex.test(email)) {
+    toast.warning('Please enter the correct email address.')
+    return
+  }
+
+  // valid phone
+  const phone = socials.value.find(social => social.type === 'phone')?.value
+  const cnPhoneRegex = /^1[3-9]\d{9}$/
+  if (phone && !cnPhoneRegex.test(phone)) {
+    toast.warning('Please enter the correct cn phone number.')
+    return
+  }
+
+  // valid website link
+  const website = socials.value.find(social => social.type === 'website')?.value
+  const urlRegex = /^https?:\/\/[^\s/$.?#].\S*$/i
+  if (website && !urlRegex.test(website)) {
+    toast.warning('Please enter the correct website url.')
+    return
+  }
+
   loading.value = true
   const { data, error } = await supabase.from('profile').update({
     socials: socials.value,
@@ -69,7 +93,7 @@ async function handleUpdate() {
     return
   }
 
-  profileStore.setProfile({
+  setProfile({
     socials: socials.value as typeof profileStore.profile.socials,
   })
 

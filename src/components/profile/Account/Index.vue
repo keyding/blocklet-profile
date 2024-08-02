@@ -18,7 +18,7 @@ const profileStore = useProfileStore()
 const id = route.params.id
 
 const name = computed(() => profileStore.profile.name || `Hey, What's up!`)
-const introduction = computed(() => profileStore.profile.introduction || `Let's create your profile right away!`)
+const introduction = computed(() => profileStore.profile.introduction)
 const avatarUrl = computed(() => profileStore.profile.avatarUrl ? `${AVATAR_BASE_URL}${profileStore.profile.avatarUrl}` : DEFAULT_AVATAR_URL)
 </script>
 
