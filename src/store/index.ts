@@ -20,6 +20,7 @@ interface Profile {
   id: string
   name: string
   introduction: string
+  slug: string
   avatarUrl: string
   aboutMe: string
   socials: Social[]
@@ -30,6 +31,7 @@ const DefaultProfile = {
   id: '',
   name: '',
   introduction: '',
+  slug: '',
   avatarUrl: '',
   aboutMe: '',
   socials: [],
